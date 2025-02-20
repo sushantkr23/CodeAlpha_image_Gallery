@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background: #f4f4f4;
+        }
+        .navbar {
+            display: flex;
+            justify-content: center;
+            background: #444;
+            padding: 15px;
+            border-radius: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .navbar button {
+            background: #ff9800;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .navbar button:hover {
+            background: #e68900;
+        }
+        .toggle-btn {
+            display: none; /* Hide toggle button by default */
+            background: #444; /* Different background color */
+            color: #ff9800; /* Different text color */
+            border: none;
+            padding: 12px 18px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .toggle-btn:hover {
+            background: #555; /* Hover effect */
+        }
+        .gallery {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .category {
+            display: none;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .category.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .image:hover {
+            transform: scale(1.05);
+        }
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .lightbox-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 90%;
+            height: 90%;
+            overflow: hidden;
+            position: relative;
+        }
+        .lightbox img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 10px;
+            object-fit: contain;
+        }
+        .lightbox .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+        }
+        .lightbox .nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 50%;
+            user-select: none;
+        }
+        .lightbox .nav.prev {
+            left: 20px;
+        }
+        .lightbox .nav.next {
+            right: 20px;
+        }
+        .lightbox .download {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff9800;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .lightbox .download:hover {
+            background: #e68900;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: center;
+    }
+    .toggle-btn {
+        display: block; /* Chhoti screen par dikhega */
+    }
+    .nav-links {
+        display: none; /* Default hidden */
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+    .nav-links button {
+        width: 100%;
+        margin: 5px 0;
+    }
+    .navbar.active .nav-links {
+        display: flex; /* Jab active ho tab dikhana */
+    }
+}
+
+    </style>
+</head>
+<body>
+    <h1>Image Gallery</h1>
+    <div class="navbar">
+        <button class="toggle-btn" onclick="toggleNavbar()">☰ Show Categories</button>
+        <div class="nav-links">
+            <button onclick="showCategory('all')">All</button>
+            <button onclick="showCategory('nature')">Nature</button>
+            <button onclick="showCategory('forest')">Forest</button>
+            <button onclick="showCategory('flowers')">Flowers</button>
+            <button onclick="showCategory('animals')">Animals</button>
+        </div>
+    </div>
+    
+    
+    <div class="gallery">
+        <div id="nature" class="category">
+            <img src="nature1.jpg" class="image" onclick="openLightbox('nature', 0)">
+            <img src="nature2.jpg" class="image" onclick="openLightbox('nature', 1)">
+            <img src="nature3.jpg" class="image" onclick="openLightbox('nature', 2)">
+            <img src="nature4.jpg" class="image" onclick="openLightbox('nature', 3)">
+            <img src="nature5.jpg" class="image" onclick="openLightbox('nature', 4)">
+            <img src="nature6.jpg" class="image" onclick="openLightbox('nature', 5)">
+            <img src="nature7.jpg" class="image" onclick="openLightbox('nature', 6)">
+            <img src="nature8.jpg" class="image" onclick="openLightbox('nature', 7)">
+        </div>
+        <div id="forest" class="category">
+            <img src="forest1.jpg" class="image" onclick="openLightbox('forest', 0)">
+            <img src="forest2.jpg" class="image" onclick="openLightbox('forest', 1)">
+            <img src="forest3.jpg" class="image" onclick="openLightbox('forest', 2)">
+            <img src="forest4.jpg" class="image" onclick="openLightbox('forest', 3)">
+            <img src="forest5.jpg" class="image" onclick="openLightbox('forest', 4)">
+            <img src="forest6.webp" class="image" onclick="openLightbox('forest', 5)">
+            <img src="forest7.jpg" class="image" onclick="openLightbox('forest', 6)">
+            <img src="forest8.webp" class="image" onclick="openLightbox('forest', 7)">
+        </div>
+        <div id="flowers" class="category">
+            <img src="flower1.jpg" class="image" onclick="openLightbox('flowers', 0)">
+            <img src="flower2.jpg" class="image" onclick="openLightbox('flowers', 1)">
+            <img src="flower3.jpg" class="image" onclick="openLightbox('flowers', 2)">
+            <img src="flower4.jpg" class="image" onclick="openLightbox('flowers', 3)">
+            <img src="flower5.jpg" class="image" onclick="openLightbox('flowers', 4)">
+            <img src="flower6.jpg" class="image" onclick="openLightbox('flowers', 5)">
+            <img src="flower7.jpg" class="image" onclick="openLightbox('flowers', 6)">
+            <img src="flower8.webp" class="image" onclick="openLightbox('flowers', 7)">
+        </div>
+        <div id="animals" class="category">
+            <img src="animal1.jpg" class="image" onclick="openLightbox('animals', 0)">
+            <img src="animal2.jpg" class="image" onclick="openLightbox('animals', 1)">
+            <img src="animal3.webp" class="image" onclick="openLightbox('animals', 2)">
+            <img src="animal4.webp" class="image" onclick="openLightbox('animals', 3)">
+            <img src="animal5.jpg" class="image" onclick="openLightbox('animals', 4)">
+            <img src="animal6.webp" class="image" onclick="openLightbox('animals', 5)">
+            <img src="animal7.jpg" class="image" onclick="openLightbox('animals', 6)">
+            <img src="animal8.jpg" class="image" onclick="openLightbox('animals', 7)">
+        </div>
+    </div>
+    
+    <div class="lightbox" id="lightbox">
+        <span class="close" onclick="closeLightbox()">&times;</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img">
+        </div>
+        <span class="nav prev" onclick="navigate(-1)">&#10094;</span>
+        <span class="nav next" onclick="navigate(1)">&#10095;</span>
+        <button class="download" onclick="downloadImage()">Download</button>
+    </div>
+    
+    <script>
+        let currentCategory = '';
+        let currentIndex = 0;
+        const categories = {
+            nature: [
+                'nature1.jpg', 'nature2.jpg', 'nature3.jpg', 'nature4.jpg',
+                'nature5.jpg', 'nature6.jpg', 'nature7.jpg', 'nature8.jpg'
+            ],
+            forest: [
+                'forest1.jpg', 'forest2.jpg', 'forest3.jpg', 'forest4.jpg',
+                'forest5.jpg', 'forest6.webp', 'forest7.jpg', 'forest8.webp'
+            ],
+            flowers: [
+                'flower1.jpg', 'flower2.jpg', 'flower3.jpg', 'flower4.jpg',
+                'flower5.jpg', 'flower6.jpg', 'flower7.jpg', 'flower8.webp'
+            ],
+            animals: [
+                'animal1.jpg', 'animal2.jpg', 'animal3.webp', 'animal4.webp',
+                'animal5.jpg', 'animal6.webp', 'animal7.jpg', 'animal8.jpg'
+            ]
+        };
+
+        // Function to toggle navbar visibility
+        function toggleNavbar() {
+    const navbar = document.querySelector('.navbar');
+    const toggleBtn = document.querySelector('.toggle-btn');
+    const navLinks = document.querySelector('.nav-links');
+
+    navbar.classList.toggle('active'); // Navbar toggle
+    navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+
+    // Text Toggle for Button
+    if (navbar.classList.contains('active')) {
+        toggleBtn.innerText = "✖ Hide Categories";
+    } else {
+        toggleBtn.innerText = "☰ Show Categories";
+    }
+}
+
+
+        // Function to show images of a specific category
+        function showCategory(category) {
+            let allCategories = document.querySelectorAll('.category');
+            allCategories.forEach(cat => {
+                cat.classList.remove('active');
+                if (cat.id === category || category === 'all') {
+                    cat.classList.add('active');
+                }
+            });
+        }
+
+        // Function to open lightbox
+        function openLightbox(category, index) {
+            currentCategory = category;
+            currentIndex = index;
+            document.getElementById('lightbox').style.display = 'flex';
+            updateLightboxImage();
+        }
+
+        // Function to close lightbox
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+
+        // Function to navigate between images in lightbox
+        function navigate(direction) {
+            currentIndex += direction;
+
+            // Check if currentIndex is out of bounds
+            if (currentIndex < 0 || currentIndex >= categories[currentCategory].length) {
+                closeLightbox(); // Close lightbox if out of bounds
+                return;
+            }
+
+            updateLightboxImage(); // Update the image in lightbox
+        }
+
+        // Function to update lightbox image
+        function updateLightboxImage() {
+            const imageSrc = categories[currentCategory][currentIndex];
+            document.getElementById('lightbox-img').src = imageSrc;
+        }
+
+        // Function to download image
+        function downloadImage() {
+            const imageSrc = categories[currentCategory][currentIndex];
+            const link = document.createElement('a');
+            link.href = imageSrc;
+            link.download = `image_${currentCategory}_${currentIndex + 1}.jpg`; // Custom filename
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Add keyboard navigation for lightbox
+        document.addEventListener('keydown', function(event) {
+            const lightbox = document.getElementById('lightbox');
+            if (lightbox.style.display === 'flex') { // Only respond if lightbox is open
+                if (event.key === 'ArrowLeft') {
+                    navigate(-1); // Move to the previous image
+                } else if (event.key === 'ArrowRight') {
+                    navigate(1); // Move to the next image
+                } else if (event.key === 'Escape') {
+                    closeLightbox(); // Close lightbox on Escape key
+                }
+            }
+        });
+
+        // Show all categories by default
+        showCategory('all');
+    </script>
+</body>
+</html>
